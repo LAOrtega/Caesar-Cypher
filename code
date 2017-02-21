@@ -1,0 +1,184 @@
+import java.util.*;
+
+public class CaesarCipher {
+
+	/**
+	 * Created: Friday, April 17, 2015
+	 */
+	public static void main(String[] args) {
+
+		//Create a Scanner object
+		Scanner input = new Scanner(System.in);
+
+		//Initialize variables
+		int option = 0, keyNum = 0;
+		String message = "";
+		boolean valid = false;
+
+		//Introduce user to program
+		System.out.println("Welcome to Caesar Cipher!\nPlease select one of the following options:\n");
+
+		//Display to user the options
+		System.out.println("1 - Encrypt a message");
+		System.out.println("2 - Decrypt a message");
+		System.out.println("3 - Brute force");
+
+		//Create do-while loop for their choice
+		do {
+			//Prompt user for their choice
+			System.out.printf("\n%-40s", "Enter your choice:");
+			try {
+				option = input.nextInt();
+				input.nextLine();
+
+				//Create if statement if they inputed an invalid number
+				if (option < 1 || option > 3) {
+					//Prompt user to try again if they inputed an invalid number
+					System.out.println("Invalid option! Please choose a number between 1-3!");
+				}
+				//Create else statement if they inputed a valid number to stop the loop
+				else {
+					valid = true;
+				}
+			}
+			//Create a catch statement if they input anything other than an integer
+			catch (InputMismatchException err) {
+				//Prompt user to try again
+				System.out.println("Invalid data! Please choose a number between 1 and 3!");
+				input.nextLine();
+			}
+		}
+		while (valid == false);
+
+		//Reset boolean for future use
+		valid = false;
+
+		//Prompt user for the message they want to encrypt or decrypt
+		System.out.printf("%-40s", "Enter your message:");
+		message = input.nextLine().trim();
+		
+		//Create if statement for options 1 and 2
+		if (option == 1 || option == 2) {
+			//Create do-while loop for key number in case of error
+			do {
+				//Prompt user for key number
+				System.out.printf("%-40s", "Enter the key number (1-26):");
+				try {
+					keyNum = input.nextInt();
+					input.nextLine();
+
+					//Create if statement in case of user inputting inappropriate key number (less than 0 or greater than 26)
+					if (keyNum < 1 || keyNum > 26) {
+						System.out.println("Invalid number! Please choose a number between 1 and 26!");
+					} else {
+						valid = true;
+					}
+				}
+				//Catch error if user inputs a non-integer character
+				catch (InputMismatchException err) {
+					System.out.println("Invalid data! Please enter a number between 1 and 26!");
+					input.nextLine();
+				}
+				System.out.println("");
+			} while (valid == false);
+			
+			//Reset boolean
+			valid = false;
+
+			System.out.print("Your translated message is: ");
+			
+			//Create if statement for encrypting
+			if (option == 1) {
+				option1(message, keyNum);
+			}
+			//Create else if statement for decrypting
+			else if (option == 2) {
+				option2(message, keyNum);
+			}
+		}
+		
+		//Create else if statement if they chose option 3
+		else if (option == 3) {
+			option3(message, keyNum);
+		}
+	}
+
+	private static void option3(String message, int keyNum) {
+		System.out.println("\nYour translated message is:\n");
+		
+		//Create for loop to count the number of decryptions it has done
+		for (keyNum = 1; keyNum <= 26; keyNum++) {
+			//Label each "solution"
+			System.out.printf("%-5s", keyNum);
+
+			option1(message, keyNum);
+			
+			System.out.println("");
+		}
+	}
+
+	private static void option2(String message, int keyNum) {
+		//Create for statement for decrypting each character and outputting the resulting character
+		for (int i = 0; i < message.length(); i++) {
+			//Create if statement if character is a capital letter
+			if ((int) message.charAt(i) >= 65 && (int) message.charAt(i) <= 90) {
+				//Create if statement if the resulting value doesn't go under the ASCII number of 'A'
+				if ((int) message.charAt(i) - keyNum >= 65) {
+					System.out.print((char) (((int) message.charAt(i)) - keyNum));
+				}
+				//Create else if statement if the resulting value goes under the ASCII number of 'A'
+				else if ((int) message.charAt(i) - keyNum < 65) {
+					System.out.print((char) (((int) message.charAt(i)) - keyNum + 26));
+				}
+			}
+			//Create else if statement if character is a lowercase letter
+			else if ((int) message.charAt(i) >= 97 && (int) message.charAt(i) <= 122) {
+				//Create if statement if the resulting value doesn't go under the ASCII number of 'a'
+				if ((int) message.charAt(i) - keyNum >= 97) {
+					System.out.print((char) (((int) message.charAt(i)) - keyNum));
+				}
+				//Create else if statement if the resulting value goes under the ASCII number of 'a'
+				else if ((int) message.charAt(i) - keyNum < 97) {
+					System.out.print((char) (((int) message.charAt(i)) - keyNum + 26));
+				}
+			}
+			//Create else statement if they input a special character (including spaces), preventing it from being "decrypted"
+			else {
+				System.out.print(message.charAt(i));
+			}
+		}
+	}
+
+	private static void option1(String message, int keyNum) {
+		//Create for statement for encrypting each character and outputting the resulting character
+		for (int i = 0; i < message.length(); i++) {
+			//Create if statement if character is a capital letter
+			if ((int) message.charAt(i) >= 65 && (int) message.charAt(i) <= 90) {
+				//Create if statement if the resulting value doesn't go over the ASCII number of 'Z'
+				if ((int) message.charAt(i) + keyNum <= 90) {
+					System.out.print((char) (((int) message.charAt(i)) + keyNum));
+				}
+				//Create else if statement if the resulting value goes over the ASCII number of 'Z'
+				else if ((int) message.charAt(i) + keyNum > 90) {
+					System.out.print((char) (((int) message.charAt(i)) + keyNum - 26));
+				}
+			}
+			//Create else it statement if the character is a lowercase letter
+			else if ((int) message.charAt(i) >= 97 && (int) message.charAt(i) <= 122) {
+				//Create if statement if the resulting value doesn't go over the ASCII number of 'z'
+				if ((int) message.charAt(i) + keyNum <= 122) {
+					System.out.print((char) (((int) message.charAt(i)) + keyNum));
+				}
+				//Create else if statement if the resulting value goes over the ASCII number of 'z'
+				else if ((int) message.charAt(i) + keyNum > 122) {
+					System.out.print((char) (((int) message.charAt(i)) + keyNum - 26));
+				}
+			}
+			//Create else statement if they input a special character (including spaces), preventing it from being "encrypted"
+			else {
+				System.out.print(message.charAt(i));
+			}
+		}
+	}
+	
+}
